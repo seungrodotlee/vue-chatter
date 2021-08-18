@@ -1,11 +1,23 @@
 {
   "name": "vue-chatter",
   "version": "0.1.0",
-  "private": true,
+  "author": {
+    "name": "seungro lee (https://github.com/seungrodotlee)",
+    "email": "srlee0226w@gmail.com"
+  },
+  "description": "component which help easy building chat app",
+  "private": false,
+  "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "build:lib": "vue-cli-service build --target lib --name vue-chatter ./src/vue-chatter.js"
   },
+  "main": "dist/vue-chatter.common.js",
+  "unpkg": "dist/vue-chatter.umd.min.js",
+  "files": [
+    "src"
+  ],
   "dependencies": {
     "core-js": "^3.6.5",
     "vue": "^2.6.11"
@@ -13,6 +25,8 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "postcss": "^7.0.36",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7",
     "vue-template-compiler": "^2.6.11"
   }
 }
