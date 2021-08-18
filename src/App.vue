@@ -11,7 +11,11 @@
       </div>
     </div>
     <div class="flex flex-col flex-grow p-2 overflow-hidden overflow-y-scroll">
-      <vue-chatter :messages="msgs" :enableAnimation="true"></vue-chatter>
+      <vue-chatter
+        ref="chatter"
+        :messages="msgs"
+        :enableAnimation="true"
+      ></vue-chatter>
     </div>
     <div class="p-2">
       <div
@@ -84,13 +88,32 @@ export default {
   methods: {
     sendMsg() {
       if (this.inputVal === "") return;
-      this.msgs.push({
+      this.$refs.chatter.appendMessage({
         type: "text",
         isReceived: false,
         data: this.inputVal,
       });
       this.inputVal = "";
     },
+  },
+  mounted() {
+    /* setTimeout(() => {
+      this.$refs.chatter.appendMessageList([
+        {
+          data: "테스트",
+          delay: 1000,
+        },
+        {
+          isReceived: false,
+          data: "입니다",
+          delay: 2000,
+        },
+        {
+          isReceived: false,
+          data: "&#128513;",
+        },
+      ]);
+    }, 10000); */
   },
 };
 </script>

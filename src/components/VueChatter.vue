@@ -52,44 +52,96 @@ export default {
       return (-c / 2) * (t * (t - 2) - 1) + b;
     },
     scrollToBottom(duration) {
-      let parentHeight = parseInt(
-        window.getComputedStyle(this.$refs.chatBody.parentElement).height
-      );
-      let chatBodyHeight = parseInt(
-        window.getComputedStyle(this.$refs.chatBody).height
-      );
-      if (parentHeight > chatBodyHeight) return;
+      return new Promise((resolve, reject) => {
+        let parentHeight = parseInt(
+          window.getComputedStyle(this.$refs.chatBody.parentElement).height
+        );
+        let chatBodyHeight = parseInt(
+          window.getComputedStyle(this.$refs.chatBody).height
+        );
+        if (parentHeight > chatBodyHeight) return;
 
-      let chatBody = this.$refs.chatBody;
-      let distance = chatBody.scrollHeight - this.lastHeight;
-      let finishAt = Date.now() + duration;
-      let start = chatBody.parentElement.scrollTop;
-      let target = start + distance;
-      let current = 0;
-      let increment = 16.6;
+        let chatBody = this.$refs.chatBody;
+        let distance = chatBody.scrollHeight - this.lastHeight;
+        let finishAt = Date.now() + duration;
+        let start = chatBody.parentElement.scrollTop;
+        let target = start + distance;
+        let current = 0;
+        let increment = 16.6;
 
-      let tick = () => {
-        current += increment;
-        let framesLeft = (finishAt - Date.now()) / increment;
+        let tick = () => {
+          current += increment;
+          let framesLeft = (finishAt - Date.now()) / increment;
 
-        if (framesLeft <= 1) {
-          chatBody.parentElement.scrollTop += distance;
-        } else {
-          chatBody.parentElement.scrollTop = this.easeInOutQuad(
-            current,
-            start,
-            target,
-            duration
-          );
+          if (framesLeft <= 1) {
+            chatBody.parentElement.scrollTop += distance;
+            resolve();
+          } else {
+            chatBody.parentElement.scrollTop = this.easeInOutQuad(
+              current,
+              start,
+              target,
+              duration
+            );
+            requestAnimationFrame(tick);
+          }
+        };
+
+        if (this.enableAnimation) {
           requestAnimationFrame(tick);
+        } else {
+          chatBody.parentElement.scrollTop = target;
+          resolve();
         }
+      });
+    },
+    _pack(data) {
+      return {
+        type: this.isExist(data.type) ? data.type : "text",
+        isReceived: this.isExist(data.isReceived) ? data.isReceived : true,
+        data: data.data,
       };
+    },
+    appendMessage(newMsg) {
+      this._registryMessage(this._pack(newMsg));
+    },
+    appendMessageList(msgList) {
+      return new Promise(async (resolve, reject) => {
+        for (let m of msgList) {
+          await this.sleep(m.delay);
+          this._registryMessage(this._pack(m));
+        }
+        resolve();
+      });
+    },
+    resetMessageList(msgList) {
+      return new Promise(async (resolve, reject) => {
+        this.attachedMsgs = [];
+        if (!this.isExist(msgList)) return;
 
-      if (this.enableAnimation) {
-        requestAnimationFrame(tick);
-      } else {
-        chatBody.parentElement.scrollTop = target;
-      }
+        for (let i in msgList) {
+          let m = msgList[i];
+
+          if (i === msgList.length - 1) {
+            await this._registryMessage(this._pack(m));
+
+            resolve();
+          } else {
+            this._registryMessage(this._pack(m));
+          }
+        }
+      });
+    },
+    getMessageList() {
+      return this.attachedMsgs;
+    },
+    _registryMessage(pack) {
+      return new Promise(async (resolve, reject) => {
+        this.attachedMsgs.push(pack);
+        await this.sleep(50);
+        await this.scrollToBottom(1000);
+        resolve();
+      });
     },
   },
   watch: {
@@ -105,11 +157,6 @@ export default {
           data: newMsg.data,
         });
       }
-    },
-    async attachedMsgs(to, from) {
-      await this.sleep(50);
-
-      this.scrollToBottom(1000);
     },
   },
   async mounted() {

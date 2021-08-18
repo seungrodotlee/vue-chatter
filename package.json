@@ -1,6 +1,6 @@
 {
   "name": "vue-chatter",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "author": {
     "name": "seungro lee (https://github.com/seungrodotlee)",
     "email": "srlee0226w@gmail.com"
@@ -16,6 +16,7 @@
   "main": "dist/vue-chatter.common.js",
   "unpkg": "dist/vue-chatter.umd.min.js",
   "files": [
+    "dist/*",
     "src"
   ],
   "dependencies": {
@@ -28,5 +29,15 @@
     "postcss": "^7.0.36",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7",
     "vue-template-compiler": "^2.6.11"
+  },
+  "keywords": [
+    "vue",
+    "component",
+    "chat"
+  ],
+  "homepage": "https://github.com/seungrodotlee/vue-chatter",
+  "bugs": {
+    "url": "https://github.com/seungrodotlee/vue-chatter.git/issue",
+    "email": "srlee0226w@gmail.com"
   }
 }
