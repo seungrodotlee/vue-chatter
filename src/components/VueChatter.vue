@@ -1,5 +1,5 @@
 <template>
-  <div ref="chatBody" class="vue-chatter flex flex-col">
+  <div ref="chatBody" class="vue-chatter flex flex-col text-left">
     <div
       v-for="(m, i) in attachedMsgs"
       :key="i"
